@@ -1,0 +1,12 @@
+{
+    "env": {
+        "MYSQL_USER": "setycontatos",
+		"MYSQL_PASSWORD": "LG10sty7",
+		"MYSQL_DATABASE": "setycontatos",
+		"MYSQL_HOST": "187.45.196.192",
+		"MYSQL_PORT": 3306,
+		"MYSQL_AUTH": true,
+
+		"JWT_KEY": "LG10sty7"
+    }
+}
