@@ -42,6 +42,7 @@ exports.postContato =  (req, res, next) => {
         FROM
           contato`,
         (error, result, field) => {
+		  conn.release();
           if(error) { return res.status(500).send({ error: error })}
           return res.status(200).send(result)
         }
@@ -67,6 +68,7 @@ exports.postContato =  (req, res, next) => {
           telefone.id_contato = ?`,
           [req.params.id_contato],
           (error, result, field) => {
+			conn.release();
             if(error) { return res.status(500).send({ error: error })}        
             if (result.length == 0) {
               return res.status(404).send({
@@ -78,4 +80,136 @@ exports.postContato =  (req, res, next) => {
       )
     })
   };
+  
+  exports.deleteTelefones = (req, res, next) => {  
+  mysql.getConnection((error, conn) => {
+    if(error) { return res.status(500).send({ error: error })}
+    conn.query(
+      'DELETE FROM telefone WHERE id_contato = ?;',
+      [req.body.id_contato],
+      (error, result, field) => {
+        conn.release();
+        if(error) { return res.status(500).send({ error: error })}
+        const response = {
+          mensagem: 'Telefone Excluídodo com sucesso.',
+          request: {
+            tipo: 'POST',
+            descricao: 'Insere um Telefone',
+            url: 'http://localhost:3000/telefones',
+            body: {
+              numero: 'String',
+              id_tipo_telefone: 'int'
+            }
+          }
+        }        
+        return res.status(202).send(response);
+      }
+    )
+  });
+};
+
+exports.deleteContato = (req, res, next) => {  
+  mysql.getConnection((error, conn) => {
+    if(error) { return res.status(500).send({ error: error })}
+    conn.query(
+      `DELETE FROM 
+			contato
+		WHERE
+			contato.id_contato = ?`,
+      [req.params.id_contato],
+      (error, result, field) => {
+        conn.release();
+        if(error) { return res.status(500).send({ error: error })}
+        const response = {
+          mensagem: 'Contato exluídos com sucesso.',
+          request: {
+            tipo: 'POST',
+            descricao: 'Insere um Contato',
+            url: 'http://localhost:3000/contatos',
+            body: {
+              numero: 'String',
+              id_tipo_telefone: 'int'
+            }
+          }
+        }        
+        return res.status(202).send(response);
+      }
+    )
+  });
+};
+
+  exports.deleteContatos = (req, res, next) => {  
+  mysql.getConnection((error, conn) => {
+    if(error) { return res.status(500).send({ error: error })}
+    conn.query(
+      `DELETE 
+			telefone 
+		FROM 
+			contato
+		INNER JOIN 
+			telefone ON contato.id_contato = telefone.id_contato		
+		WHERE
+			contato.id_contato = ?`,
+      [req.params.id_contato],
+      (error, result, field) => {
+        conn.release();
+        if(error) { return res.status(500).send({ error: error })}
+        const response = {
+          mensagem: 'Telefones e e-mails exluídos com sucesso.',
+          request: {
+            tipo: 'POST',
+            descricao: 'Insere um Contato',
+            url: 'http://localhost:3000/contatos',
+            body: {
+              numero: 'String',
+              id_tipo_telefone: 'int'
+            }
+          }
+        }        
+        return res.status(202).send(response);
+      }
+    )
+  });
+};
+
+exports.patchContato = (req, res, next) => {
+  mysql.getConnection((error, conn) => {
+    if(error) { return res.status(500).send({ error: error })}
+    conn.query(
+      `UPDATE 
+		contato 
+	SET 
+		nome = ?,
+		id_grupo = ?,
+		observacao = ?
+	WHERE
+		id_contato = ?`,
+      [
+        req.body.nome,
+        req.body.id_grupo,
+        req.body.observacao,
+		req.body.id_contato
+      ],
+      (error, result, field) => {
+        conn.release();
+        if(error) { return res.status(500).send({ error: error })}
+        const response = {
+          mensagem: 'Contato Atualizado com sucesso.',
+         contatoAtualizado: {
+            id_contato: req.body.id_contato,
+            nome: req.body.nome,
+            id_grupo: req.body.id_grupo,
+			observacao: req.body.observacao,
+            request: {
+              tipo: 'GET',
+              descricao: 'Retorna os detalhes de um contato específico',
+              url: 'http://localhost:3000/contatos/' + req.body.id_contato
+            }
+          }
+        }
+        return res.status(202).send(response);
+      }
+    )
+  });
+};
   

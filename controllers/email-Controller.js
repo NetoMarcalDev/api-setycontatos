@@ -48,6 +48,7 @@ exports.postEmail =  (req, res, next) => {
         `,
         (error, result, field) => {
           if(error) { return res.status(500).send({ error: error })}
+		  conn.release();
           const response = {     
             quantidade: result.length,     
             contatos: result.map(ema => {
@@ -92,6 +93,7 @@ exports.postEmail =  (req, res, next) => {
 		email.id_contato = ? `,
           [req.params.id_contato],
           (error, result, field) => {
+			 conn.release();
             if(error) { return res.status(500).send({ error: error })}        
             if (result.length == 0) {
               return res.status(404).send({
