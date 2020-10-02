@@ -49,6 +49,41 @@ exports.postContato =  (req, res, next) => {
       )
     })
   };
+  
+  exports.getContatosLista = (req, res, next) => {
+    mysql.getConnection((error, conn) => {
+      if(error) { return res.status(500).send({ error: error })}
+      conn.query(
+        `SELECT
+			cont.id_contato,
+			cont.nome,
+			fone.numero,
+			tipo.descricao as tipo,
+			grup.descricao as grupo
+		FROM
+			telefone as fone
+		INNER JOIN
+			contato as cont
+		ON
+			cont.id_contato = fone.id_contato
+		INNER JOIN
+			tipo_telefone as tipo 
+		ON
+			tipo.id_tipo_telefone = fone.id_tipo_telefone  
+		INNER JOIN
+			grupo as grup 
+		ON
+			grup.id_grupo = cont.id_grupo  
+		ORDER BY 
+			cont.nome ASC`,
+        (error, result, field) => {
+		  conn.release();
+          if(error) { return res.status(500).send({ error: error })}
+          return res.status(200).send(result)
+        }
+      )
+    })
+  };
 
   exports.getTelefones = (req, res, next) => {
     mysql.getConnection((error, conn) => {
