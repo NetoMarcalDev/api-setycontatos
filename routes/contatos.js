@@ -8,7 +8,8 @@ router.get('/lista', ContatosController.getContatosLista);
 
 router.get('/:id_contato', ContatosController.getTelefones);
 router.delete('/delete/:id_contato', ContatosController.deleteContato);
-router.delete('/:id_contato', ContatosController.deleteContatos);
+router.delete('/email/:id_contato', ContatosController.deleteEmail);
+router.delete('/:id_contato', ContatosController.deleteContatos); 
 router.patch('/', ContatosController.patchContato);
 
 module.exports = router;

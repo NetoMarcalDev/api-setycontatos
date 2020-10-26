@@ -6,6 +6,6 @@ router.post('/', TelefonesController.postTelefone);
 router.get('/', TelefonesController.getTelefones);
 router.get('/:numero', TelefonesController.getTelefone);
 router.patch('/', TelefonesController.patchTelefone);
-router.delete('/', TelefonesController.deleteTelefone);
+router.delete('/:id_telefone', TelefonesController.deleteTelefone);
 
 module.exports = router;

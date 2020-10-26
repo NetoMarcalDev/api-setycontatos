@@ -150,7 +150,7 @@ exports.deleteContato = (req, res, next) => {
       `DELETE FROM 
 			contato
 		WHERE
-			contato.id_contato = ?`,
+			id_contato = ?;`,
       [req.params.id_contato],
       (error, result, field) => {
         conn.release();
@@ -163,7 +163,7 @@ exports.deleteContato = (req, res, next) => {
             url: 'http://localhost:3000/contatos',
             body: {
               numero: 'String',
-              id_tipo_telefone: 'int'
+              id_contato: 'int'
             }
           }
         }        
@@ -178,11 +178,11 @@ exports.deleteContato = (req, res, next) => {
     if(error) { return res.status(500).send({ error: error })}
     conn.query(
       `DELETE 
-			telefone 
+			telefone
 		FROM 
 			contato
 		INNER JOIN 
-			telefone ON contato.id_contato = telefone.id_contato		
+			telefone ON contato.id_contato = telefone.id_contato			
 		WHERE
 			contato.id_contato = ?`,
       [req.params.id_contato],
@@ -242,6 +242,36 @@ exports.patchContato = (req, res, next) => {
             }
           }
         }
+        return res.status(202).send(response);
+      }
+    )
+  });
+};
+
+exports.deleteEmail = (req, res, next) => {  
+  mysql.getConnection((error, conn) => {
+    if(error) { return res.status(500).send({ error: error })}
+    conn.query(
+      `DELETE FROM 
+			email
+		WHERE
+			id_contato = ?`,
+      [req.params.id_contato],
+      (error, result, field) => {
+        conn.release();
+        if(error) { return res.status(500).send({ error: error })}
+        const response = {
+          mensagem: 'Email exluídos com sucesso.',
+          request: {
+            tipo: 'POST',
+            descricao: 'Insere um E-mail',
+            url: 'http://localhost:3000/contatos',
+            body: {
+              numero: 'String',
+              id_email: 'int'
+            }
+          }
+        }        
         return res.status(202).send(response);
       }
     )

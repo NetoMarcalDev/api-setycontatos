@@ -143,7 +143,7 @@ exports.deleteTelefone = (req, res, next) => {
     if(error) { return res.status(500).send({ error: error })}
     conn.query(
       'DELETE FROM telefone WHERE id_telefone = ?;',
-      [req.body.id_telefone],
+      [req.params.id_telefone],
       (error, result, field) => {
         conn.release();
         if(error) { return res.status(500).send({ error: error })}
